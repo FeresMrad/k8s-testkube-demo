@@ -1,0 +1,46 @@
+<div class="container">
+  <h2>Product Catalog</h2>
+
+  @if (loading) {
+    <div class="spinner-container">
+      <mat-spinner />
+    </div>
+  } @else {
+    <table mat-table [dataSource]="products" class="mat-elevation-z2">
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let p">{{ p.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef>Category</th>
+        <td mat-cell *matCellDef="let p">
+          <mat-chip>{{ p.category }}</mat-chip>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="author">
+        <th mat-header-cell *matHeaderCellDef>Author</th>
+        <td mat-cell *matCellDef="let p">{{ p.author }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="publishedAt">
+        <th mat-header-cell *matHeaderCellDef>Published</th>
+        <td mat-cell *matCellDef="let p">{{ p.publishedAt | date:'mediumDate' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let p">
+          <button mat-button color="primary" [routerLink]="['/products', p.id]">
+            View Details
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  }
+</div>
