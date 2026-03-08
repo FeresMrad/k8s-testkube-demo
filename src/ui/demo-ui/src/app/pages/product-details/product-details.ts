@@ -10,7 +10,7 @@ import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product.model';
 
 @Component({
-  selector: 'app-product-detail',
+  selector: 'app-product-details',
   standalone: true,
   imports: [
     CommonModule,
@@ -21,10 +21,10 @@ import { Product } from '../../models/product.model';
     MatProgressSpinnerModule,
     MatIconModule
   ],
-  templateUrl: './product-detail.component.html',
-  styleUrl: './product-detail.component.scss'
+  templateUrl: './product-details.html',
+  styleUrl: './product-details.scss'
 })
-export class ProductDetailComponent implements OnInit {
+export class ProductDetailsComponent implements OnInit {
   product: Product | null = null;
   loading = true;
   notFound = false;
