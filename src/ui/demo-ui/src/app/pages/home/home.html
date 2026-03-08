@@ -1,0 +1,34 @@
+<div class="hero">
+  <h1>K8s TestKube Demo</h1>
+  <p class="subtitle">
+    A demo running on Kubernetes with automated testing via TestKube.
+  </p>
+
+  <div class="cards">
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>inventory_2</mat-icon>
+        <mat-card-title>Product Catalog</mat-card-title>
+        <mat-card-subtitle>Browse items from MongoDB</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" routerLink="/products">
+          View Products
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>picture_as_pdf</mat-icon>
+        <mat-card-title>PDF Report</mat-card-title>
+        <mat-card-subtitle>Download a generated product report</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-actions>
+        <button mat-raised-button color="accent" routerLink="/report">
+          Go to Report
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
