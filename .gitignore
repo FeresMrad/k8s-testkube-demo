@@ -1,0 +1,41 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.userprefs
+TestResults/
+*.nupkg
+*.snupkg
+
+# Node / Angular / Playwright
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+yarn-error.log
+playwright-report/
+test-results/
+blob-report/
+
+# Docker
+.dockerignore
+
+# Kubernetes / Helm
+*.kubeconfig
+kubeconfig
+*.pem
+*.key
+*.crt
+
+# Environment / Secrets
+.env
+.env.local
+.env.*.local
+*.secret
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
