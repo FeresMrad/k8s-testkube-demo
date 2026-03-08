@@ -1,0 +1,33 @@
+.container {
+  padding: 32px;
+
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    padding: 64px;
+  }
+
+  .detail-card {
+    margin-top: 16px;
+    max-width: 720px;
+
+    .description {
+      font-size: 1rem;
+      color: #555;
+      margin: 16px 0;
+    }
+
+    .meta {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 16px;
+    }
+
+    .tags {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+  }
+}
