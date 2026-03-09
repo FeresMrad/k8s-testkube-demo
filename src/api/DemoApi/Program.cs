@@ -89,3 +89,5 @@ app.MapGet("/api/report/download", async (PdfService pdfSvc, ProductService prod
 .WithSummary("Download a PDF report of all products");
 
 app.Run();
+
+public partial class Program { }
