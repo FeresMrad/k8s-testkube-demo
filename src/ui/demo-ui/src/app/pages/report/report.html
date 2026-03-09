@@ -5,18 +5,13 @@
   </p>
 
   <div class="action-area">
-    @if (downloading) {
-      <mat-spinner diameter="48" />
-      <p>Generating report...</p>
-    } @else {
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="downloadReport()"
-        id="download-report-btn">
-        <mat-icon>download</mat-icon>
-        Download PDF Report
-      </button>
-    }
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="downloadReport()"
+      id="download-report-btn">
+      <mat-icon>download</mat-icon>
+      Download PDF Report
+    </button>
   </div>
 </div>

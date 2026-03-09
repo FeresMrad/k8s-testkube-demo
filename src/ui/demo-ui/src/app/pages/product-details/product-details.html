@@ -3,30 +3,26 @@
     <mat-icon>arrow_back</mat-icon> Back to Products
   </button>
 
-  @if (loading) {
-    <div class="spinner-container">
-      <mat-spinner />
-    </div>
-  } @else if (notFound) {
+  @if (notFound()) {
     <p>Product not found.</p>
-  } @else if (product) {
+  } @else if (product()) {
     <mat-card class="detail-card">
       <mat-card-header>
-        <mat-card-title>{{ product.name }}</mat-card-title>
-        <mat-card-subtitle>{{ product.category }}</mat-card-subtitle>
+        <mat-card-title>{{ product()!.name }}</mat-card-title>
+        <mat-card-subtitle>{{ product()!.category }}</mat-card-subtitle>
       </mat-card-header>
 
       <mat-card-content>
-        <p class="description">{{ product.description }}</p>
+        <p class="description">{{ product()!.description }}</p>
 
         <div class="meta">
-          <span><strong>Author:</strong> {{ product.author }}</span>
-          <span><strong>Published:</strong> {{ product.publishedAt | date:'longDate' }}</span>
+          <span><strong>Author:</strong> {{ product()!.author }}</span>
+          <span><strong>Published:</strong> {{ product()!.publishedAt | date:'longDate' }}</span>
         </div>
 
         <div class="tags">
           <strong>Tags:</strong>
-          @for (tag of product.tags; track tag) {
+          @for (tag of product()!.tags; track tag) {
             <mat-chip>{{ tag }}</mat-chip>
           }
         </div>
