@@ -15,9 +15,9 @@ public class ProductService
             settings.Value.ProductsCollectionName);
     }
 
-    public async Task<List<Product>> GetAllAsync() =>
+    public virtual async Task<List<Product>> GetAllAsync() =>
         await _products.Find(_ => true).ToListAsync();
 
-    public async Task<Product?> GetByIdAsync(string id) =>
+    public virtual async Task<Product?> GetByIdAsync(string id) =>
         await _products.Find(p => p.Id == id).FirstOrDefaultAsync();
 }

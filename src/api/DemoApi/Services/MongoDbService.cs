@@ -14,6 +14,6 @@ public class MongoDbService
         _database = client.GetDatabase(settings.Value.DatabaseName);
     }
 
-    public IMongoCollection<T> GetCollection<T>(string collectionName) =>
+    public virtual IMongoCollection<T> GetCollection<T>(string collectionName) =>
         _database.GetCollection<T>(collectionName);
 }
