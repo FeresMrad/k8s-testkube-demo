@@ -24,8 +24,7 @@ spec:
       shell: dotnet restore
 
     - name: Run xUnit API tests
+      artifacts:
+        paths:
+          - "**/*.trx"
       shell: dotnet test --verbosity normal --logger "trx;LogFileName=results.trx" --results-directory /data/artifacts
-
-  artifacts:
-    paths:
-      - /data/artifacts/**/*.trx

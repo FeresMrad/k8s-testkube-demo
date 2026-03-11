@@ -14,6 +14,12 @@ spec:
       paths:
         - tests/e2e
 
+  pod:
+    hostAliases:
+      - ip: "10.96.189.46"
+        hostnames:
+          - "demo.local"
+
   container:
     image: mcr.microsoft.com/playwright/dotnet:v1.51.0-noble
     workingDir: /data/repo/tests/e2e/DemoApp.E2E
@@ -22,15 +28,14 @@ spec:
     - name: Restore dependencies
       shell: dotnet restore
 
+    - name: Build project
+      shell: dotnet build
+
     - name: Install Playwright browsers
-      shell: pwsh bin/Debug/net10.0/playwright.ps1 install chromium || dotnet build && pwsh bin/Debug/net10.0/playwright.ps1 install chromium
+      shell: pwsh bin/Debug/net10.0/playwright.ps1 install chromium
 
     - name: Run Playwright E2E tests
+      artifacts:
+        paths:
+          - "**/*.trx"
       shell: dotnet test --verbosity normal --logger "trx;LogFileName=results.trx" --results-directory /data/artifacts
-      env:
-        - name: BASE_URL
-          value: "http://demo.local"
-
-  artifacts:
-    paths:
-      - /data/artifacts/**/*.trx
