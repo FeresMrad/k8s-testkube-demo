@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Microsoft.Playwright;
 
 namespace DemoApp.E2E.Tests;
 
@@ -27,11 +28,11 @@ public class HomePageTests : PageTestBase
         await Page.GotoAsync(BaseUrl);
 
         // Act
-        await Page.GetByRole(Microsoft.Playwright.AriaRole.Button,
-            new() { Name = "View Products" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "View Products" }).ClickAsync();
 
-        // Assert
-        await Page.WaitForURLAsync($"{BaseUrl}/products");
+        // Assert — wait for the products table to appear, not navigation event
+        var table = Page.Locator("table");
+        await table.WaitForAsync(new LocatorWaitForOptions { Timeout = 10_000 });
         Page.Url.Should().Contain("/products");
     }
 
@@ -42,11 +43,11 @@ public class HomePageTests : PageTestBase
         await Page.GotoAsync(BaseUrl);
 
         // Act
-        await Page.GetByRole(Microsoft.Playwright.AriaRole.Button,
-            new() { Name = "Go to Report" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Go to Report" }).ClickAsync();
 
-        // Assert
-        await Page.WaitForURLAsync($"{BaseUrl}/report");
+        // Assert — wait for the download button to appear, not navigation event
+        var downloadBtn = Page.Locator("#download-report-btn");
+        await downloadBtn.WaitForAsync(new LocatorWaitForOptions { Timeout = 10_000 });
         Page.Url.Should().Contain("/report");
     }
 }

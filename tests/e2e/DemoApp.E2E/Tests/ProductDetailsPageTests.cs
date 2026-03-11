@@ -19,16 +19,19 @@ public class ProductDetailsPageTests : PageTestBase
 
         // Act
         await firstViewDetailsBtn.ClickAsync();
-        await Page.WaitForURLAsync(new Regex($"{BaseUrl}/products/.+"));
 
-        // Assert — key elements are visible on the details page
+        // Assert — wait for the detail page DOM, not navigation event
         var backButton = Page.Locator("button:has-text('Back to Products')");
-        await backButton.WaitForAsync();
-        await backButton.IsVisibleAsync();
+        await backButton.WaitForAsync(new LocatorWaitForOptions { Timeout = 10_000 });
+
+        Page.Url.Should().MatchRegex(@"/products/[a-zA-Z0-9]+$");
+
+        var isVisible = await backButton.IsVisibleAsync();
+        isVisible.Should().BeTrue();
 
         // Card content is present
         var card = Page.Locator("mat-card");
-        await card.WaitForAsync();
+        await card.WaitForAsync(new LocatorWaitForOptions { Timeout = 10_000 });
         var cardText = await card.InnerTextAsync();
         cardText.Should().NotBeNullOrWhiteSpace();
 

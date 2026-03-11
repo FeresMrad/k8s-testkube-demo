@@ -13,10 +13,7 @@ public class ProductsPageTests : PageTestBase
 
         // Assert — wait for the table to appear
         var table = Page.Locator("table");
-        await table.WaitForAsync(new LocatorWaitForOptions
-        {
-            Timeout = 10_000
-        });
+        await table.WaitForAsync(new LocatorWaitForOptions { Timeout = 10_000 });
 
         var rows = Page.Locator("tr[mat-row]");
         var rowCount = await rows.CountAsync();
@@ -29,18 +26,16 @@ public class ProductsPageTests : PageTestBase
         // Arrange
         await Page.GotoAsync($"{BaseUrl}/products");
 
-        // Wait for the table rows to load
         var firstViewDetailsBtn = Page.Locator("button:has-text('View Details')").First;
-        await firstViewDetailsBtn.WaitForAsync(new LocatorWaitForOptions
-        {
-            Timeout = 10_000
-        });
+        await firstViewDetailsBtn.WaitForAsync(new LocatorWaitForOptions { Timeout = 10_000 });
 
         // Act
         await firstViewDetailsBtn.ClickAsync();
 
-        // Assert — URL should be /products/{some-id}
-        await Page.WaitForURLAsync(new Regex($"{BaseUrl}/products/.+"));
+        // Assert — wait for the detail page DOM, not navigation event
+        var backButton = Page.Locator("button:has-text('Back to Products')");
+        await backButton.WaitForAsync(new LocatorWaitForOptions { Timeout = 10_000 });
+
         Page.Url.Should().MatchRegex(@"/products/[a-zA-Z0-9]+$");
     }
 }
