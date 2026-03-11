@@ -19,7 +19,8 @@ public class ProductsEndpointTests : IClassFixture<WebApplicationFactory<Program
     {
         _sampleProducts = ProductFixtures.GetSampleProducts();
 
-        var mockProductService = new Mock<ProductService>();
+        // Mock the interface — no constructor issues
+        var mockProductService = new Mock<IProductService>();
         mockProductService
             .Setup(s => s.GetAllAsync())
             .ReturnsAsync(_sampleProducts);
@@ -34,9 +35,9 @@ public class ProductsEndpointTests : IClassFixture<WebApplicationFactory<Program
         {
             builder.ConfigureServices(services =>
             {
-                // Remove the real ProductService and replace with mock
+                // Remove the real IProductService and replace with mock
                 var descriptor = services.SingleOrDefault(
-                    d => d.ServiceType == typeof(ProductService));
+                    d => d.ServiceType == typeof(IProductService));
                 if (descriptor != null)
                     services.Remove(descriptor);
 

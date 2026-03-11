@@ -18,18 +18,6 @@ public class ProductServiceTests
     public ProductServiceTests()
     {
         _mockCollection = new Mock<IMongoCollection<Product>>();
-        _mockMongoDbService = new Mock<MongoDbService>(
-            Options.Create(new MongoDbSettings
-            {
-                ConnectionString = "mongodb://localhost:27017",
-                DatabaseName = "testdb",
-                ProductsCollectionName = "products"
-            })
-        );
-
-        _mockMongoDbService
-            .Setup(m => m.GetCollection<Product>("products"))
-            .Returns(_mockCollection.Object);
 
         var settings = Options.Create(new MongoDbSettings
         {
@@ -37,6 +25,11 @@ public class ProductServiceTests
             DatabaseName = "testdb",
             ProductsCollectionName = "products"
         });
+
+        _mockMongoDbService = new Mock<MongoDbService>(settings);
+        _mockMongoDbService
+            .Setup(m => m.GetCollection<Product>("products"))
+            .Returns(_mockCollection.Object);
 
         _sut = new ProductService(_mockMongoDbService.Object, settings);
     }
@@ -106,7 +99,6 @@ public class ProductServiceTests
         result.Should().BeNull();
     }
 
-    // ── Helper ────────────────────────────────────────────────────────────────
     private static Mock<IAsyncCursor<Product>> CreateMockCursor(List<Product> products)
     {
         var mockCursor = new Mock<IAsyncCursor<Product>>();

@@ -2,34 +2,29 @@ using DemoApi.Configuration;
 using DemoApi.Services;
 using QuestPDF.Infrastructure;
 
-// QuestPDF community license — free for open source / demo projects
 QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ── Configuration ────────────────────────────────────────────────────────────
 builder.Services.Configure<MongoDbSettings>(
     builder.Configuration.GetSection("MongoDbSettings"));
 
-// ── Services ─────────────────────────────────────────────────────────────────
 builder.Services.AddSingleton<MongoDbService>();
-builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<PdfService>();
 
-// ── CORS (allows Angular dev server to call the API) ─────────────────────────
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
         policy.WithOrigins(
-                "http://localhost:4200",  // Angular dev server
-                "http://demo.local")      // Kubernetes ingress
+                "http://localhost:4200",
+                "http://demo.local")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
 
-// ── Swagger / OpenAPI ─────────────────────────────────────────────────────────
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -43,9 +38,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// ── Middleware ────────────────────────────────────────────────────────────────
 app.UseCors("AllowAngular");
-
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -53,12 +46,11 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger";
 });
 
-// ── Routes ────────────────────────────────────────────────────────────────────
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }))
    .WithTags("Health")
    .WithSummary("Health check endpoint");
 
-app.MapGet("/api/products", async (ProductService svc) =>
+app.MapGet("/api/products", async (IProductService svc) =>
 {
     var products = await svc.GetAllAsync();
     return Results.Ok(products);
@@ -66,7 +58,7 @@ app.MapGet("/api/products", async (ProductService svc) =>
 .WithTags("Products")
 .WithSummary("Get all products");
 
-app.MapGet("/api/products/{id}", async (string id, ProductService svc) =>
+app.MapGet("/api/products/{id}", async (string id, IProductService svc) =>
 {
     var product = await svc.GetByIdAsync(id);
     return product is null ? Results.NotFound() : Results.Ok(product);
@@ -74,7 +66,7 @@ app.MapGet("/api/products/{id}", async (string id, ProductService svc) =>
 .WithTags("Products")
 .WithSummary("Get a product by ID");
 
-app.MapGet("/api/report/download", async (PdfService pdfSvc, ProductService productSvc) =>
+app.MapGet("/api/report/download", async (PdfService pdfSvc, IProductService productSvc) =>
 {
     var products = await productSvc.GetAllAsync();
     var pdfBytes = pdfSvc.GenerateProductReport(products);

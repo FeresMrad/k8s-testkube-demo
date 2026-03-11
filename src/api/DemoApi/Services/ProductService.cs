@@ -5,7 +5,7 @@ using MongoDB.Driver;
 
 namespace DemoApi.Services;
 
-public class ProductService
+public class ProductService : IProductService
 {
     private readonly IMongoCollection<Product> _products;
 
