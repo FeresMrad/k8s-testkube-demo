@@ -1,0 +1,31 @@
+apiVersion: testworkflows.testkube.io/v1
+kind: TestWorkflow
+metadata:
+  name: api-tests
+  namespace: testkube
+  labels:
+    app: demo
+    type: api
+spec:
+  content:
+    git:
+      uri: https://github.com/FeresMrad/k8s-testkube-demo.git
+      revision: master
+      paths:
+        - tests/api-tests
+        - src/api
+
+  container:
+    image: mcr.microsoft.com/dotnet/sdk:10.0
+    workingDir: /data/repo/tests/api-tests/DemoApi.Tests
+
+  steps:
+    - name: Restore dependencies
+      shell: dotnet restore
+
+    - name: Run xUnit API tests
+      shell: dotnet test --verbosity normal --logger "trx;LogFileName=results.trx" --results-directory /data/artifacts
+
+  artifacts:
+    paths:
+      - /data/artifacts/**/*.trx
