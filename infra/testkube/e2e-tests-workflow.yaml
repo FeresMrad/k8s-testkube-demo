@@ -1,0 +1,36 @@
+apiVersion: testworkflows.testkube.io/v1
+kind: TestWorkflow
+metadata:
+  name: e2e-tests
+  namespace: testkube
+  labels:
+    app: demo
+    type: e2e
+spec:
+  content:
+    git:
+      uri: https://github.com/FeresMrad/k8s-testkube-demo.git
+      revision: master
+      paths:
+        - tests/e2e
+
+  container:
+    image: mcr.microsoft.com/playwright/dotnet:v1.51.0-noble
+    workingDir: /data/repo/tests/e2e/DemoApp.E2E
+
+  steps:
+    - name: Restore dependencies
+      shell: dotnet restore
+
+    - name: Install Playwright browsers
+      shell: pwsh bin/Debug/net10.0/playwright.ps1 install chromium || dotnet build && pwsh bin/Debug/net10.0/playwright.ps1 install chromium
+
+    - name: Run Playwright E2E tests
+      shell: dotnet test --verbosity normal --logger "trx;LogFileName=results.trx" --results-directory /data/artifacts
+      env:
+        - name: BASE_URL
+          value: "http://demo.local"
+
+  artifacts:
+    paths:
+      - /data/artifacts/**/*.trx
