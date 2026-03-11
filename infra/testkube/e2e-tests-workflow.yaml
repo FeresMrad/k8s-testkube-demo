@@ -21,21 +21,33 @@ spec:
           - "demo.local"
 
   container:
-    image: mcr.microsoft.com/playwright/dotnet:v1.51.0-noble
+    image: mcr.microsoft.com/dotnet/sdk:10.0
     workingDir: /data/repo/tests/e2e/DemoApp.E2E
+    env:
+      - name: PLAYWRIGHT_BROWSERS_PATH
+        value: /data/pw-browsers
 
   steps:
-    - name: Restore dependencies
-      shell: dotnet restore
+    - name: Install system dependencies
+      shell: |
+        apt-get update -qq
+        apt-get install -y --no-install-recommends \
+          libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 \
+          libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
+          libgbm1 libxkbcommon0 libpango-1.0-0 libcairo2 \
+          libasound2t64 libwayland-client0
 
-    - name: Build project
-      shell: dotnet build
+    - name: Restore and build
+      shell: |
+        dotnet restore
+        dotnet build -c Debug
 
-    - name: Install Playwright browsers
-      shell: pwsh bin/Debug/net10.0/playwright.ps1 install chromium
+    - name: Install Playwright browsers and run tests
+      shell: |
+        pwsh bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
+        dotnet test --verbosity normal --logger "trx;LogFileName=results.trx" --results-directory /data/repo/tests/e2e/DemoApp.E2E/TestResults
 
-    - name: Run Playwright E2E tests
+    - name: Save test results
       artifacts:
         paths:
-          - "**/*.trx"
-      shell: dotnet test --verbosity normal --logger "trx;LogFileName=results.trx" --results-directory /data/artifacts
+          - /data/repo/tests/e2e/DemoApp.E2E/TestResults/**/*.trx
