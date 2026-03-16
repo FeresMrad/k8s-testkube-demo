@@ -51,3 +51,4 @@ spec:
       artifacts:
         paths:
           - /data/repo/tests/e2e/DemoApp.E2E/TestResults/**/*.trx
+          - /data/repo/tests/e2e/DemoApp.E2E/TestResults/videos/**/*.webm
