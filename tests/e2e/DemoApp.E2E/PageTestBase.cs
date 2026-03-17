@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using Microsoft.Playwright;
 
 namespace DemoApp.E2E;
@@ -20,11 +22,16 @@ public class PageTestBase : IAsyncLifetime
             Headless = true
         });
 
-        // Video is recorded per browser context.
-        // This path is relative to the test project's working directory.
+        // Compute an absolute path for TestResults/videos relative to where the test runner runs.
+        // AppContext.BaseDirectory is the test runtime folder (e.g. bin/Debug/net10.0).
+        // Climb back up to the project folder and place videos in ./TestResults/videos so the path
+        // is stable whether running locally or in TestKube.
+        var videoDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "TestResults", "videos"));
+        Directory.CreateDirectory(videoDir);
+
         Context = await Browser.NewContextAsync(new BrowserNewContextOptions
         {
-            RecordVideoDir = "TestResults/videos",
+            RecordVideoDir = videoDir,
             RecordVideoSize = new RecordVideoSize { Width = 1280, Height = 720 }
         });
 
@@ -35,7 +42,7 @@ public class PageTestBase : IAsyncLifetime
     {
         await Page.CloseAsync();
 
-        // Important: closing the context finalizes (flushes) the video file to disk.
+        // Closing the context finalizes the video file and flushes it to disk.
         await Context.CloseAsync();
 
         await Browser.CloseAsync();
